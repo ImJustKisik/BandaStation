@@ -54,6 +54,7 @@
 #include "orderables/_orderables.dme"
 #include "outfits/_outfits.dme"
 #include "overrides/_overrides.dme"
+#include "pain/_pain.dme"
 #include "paperwork/_paperwork.dme"
 #include "pixel_shift/_pixel_shift.dme"
 #include "preferences/_preferences.dme"

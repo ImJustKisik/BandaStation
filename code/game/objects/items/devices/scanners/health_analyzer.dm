@@ -3,6 +3,8 @@
 #define SCANMODE_WOUND 1
 #define SCANMODE_COUNT 2 // Update this to be the number of scan modes if you add more
 
+#define COMSIG_MOB_HEALTHSCANNED "healthscanned" // NON-MODULE - signal sent after a health scan
+
 /obj/item/healthanalyzer
 	name = "health analyzer"
 	icon = 'icons/obj/devices/scanner.dmi'
@@ -170,6 +172,7 @@
 	if(!advanced && target.has_reagent(/datum/reagent/inverse/technetium))
 		advanced = TRUE
 
+	SEND_SIGNAL(target, COMSIG_MOB_HEALTHSCANNED, user, render_list)
 	SEND_SIGNAL(target, COMSIG_LIVING_HEALTHSCAN, render_list, advanced, user, mode, tochat)
 
 	// Husk detection

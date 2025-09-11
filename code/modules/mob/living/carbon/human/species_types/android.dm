@@ -47,6 +47,7 @@
 		BODY_ZONE_L_LEG = /obj/item/bodypart/leg/left/robot/android,
 		BODY_ZONE_R_LEG = /obj/item/bodypart/leg/right/robot/android,
 	)
+	species_pain_mod = 0.2
 
 /datum/species/android/get_physical_attributes()
 	return "Androids are almost, but not quite, identical to fully augmented humans. \
