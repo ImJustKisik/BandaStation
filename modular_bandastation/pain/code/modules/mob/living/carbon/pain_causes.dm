@@ -3,22 +3,22 @@
 /datum/surgery_step/saw/success(mob/user, mob/living/carbon/target, target_zone, obj/item/tool, datum/surgery/surgery, default_display_results)
 	. = ..()
 	if(target.stat == CONSCIOUS)
-		var/obj/item/organ/lungs/our_lungs = target.getorganslot(ORGAN_SLOT_LUNGS)
+		var/obj/item/organ/lungs/our_lungs = target.get_organ_slot(ORGAN_SLOT_LUNGS)
 		if(target.IsSleeping() && our_lungs?.on_anesthetic)
-			SEND_SIGNAL(target, COMSIG_ADD_MOOD_EVENT, "surgery", /datum/mood_event/anesthetic)
+			SEND_SIGNAL(target, COMSIG_CARBON_MOOD_UPDATE, "surgery", /datum/mood_event/anesthetic)
 		else
-			SEND_SIGNAL(target, COMSIG_ADD_MOOD_EVENT, "surgery", /datum/mood_event/surgery)
+			SEND_SIGNAL(target, COMSIG_CARBON_MOOD_UPDATE, "surgery", /datum/mood_event/surgery)
 			target.flash_pain_overlay(2)
 
 /datum/surgery_step/incise/success(mob/user, mob/living/carbon/target, target_zone, obj/item/tool, datum/surgery/surgery, default_display_results = FALSE)
 	. = ..()
 	target.cause_pain(target_zone, 12) // incise doesn't actually deal any direct dmg, unlike saw
 	if(target.stat == CONSCIOUS)
-		var/obj/item/organ/lungs/our_lungs = target.getorganslot(ORGAN_SLOT_LUNGS)
+		var/obj/item/organ/lungs/our_lungs = target.get_organ_slot(ORGAN_SLOT_LUNGS)
 		if(target.IsSleeping() && our_lungs?.on_anesthetic)
-			SEND_SIGNAL(target, COMSIG_ADD_MOOD_EVENT, "surgery", /datum/mood_event/anesthetic)
+			SEND_SIGNAL(target, COMSIG_CARBON_MOOD_UPDATE, "surgery", /datum/mood_event/anesthetic)
 		else
-			SEND_SIGNAL(target, COMSIG_ADD_MOOD_EVENT, "surgery", /datum/mood_event/surgery/major)
+			SEND_SIGNAL(target, COMSIG_CARBON_MOOD_UPDATE, "surgery", /datum/mood_event/surgery/major)
 			target.flash_pain_overlay(1)
 
 /datum/surgery_step/replace_limb/success(mob/living/user, mob/living/carbon/target, target_zone, obj/item/bodypart/tool, datum/surgery/surgery, default_display_results = FALSE)
@@ -85,26 +85,26 @@
 		carbon_owner.cause_pain(BODY_ZONES_ALL, -1.5)
 
 // Painkiller withdraw = pain
-/datum/addiction/opiods/withdrawal_stage_1_process(mob/living/carbon/affected_carbon, delta_time)
+/datum/addiction/opiods/withdrawal_stage_1_process(mob/living/carbon/affected_carbon, seconds_per_tick)
 	. = ..()
 	if(!affected_carbon.pain_controller)
 		return
-	if(affected_carbon.pain_controller.get_average_pain() <= 20 && DT_PROB(8, delta_time))
-		affected_carbon.cause_pain(BODY_ZONES_ALL, 0.5 * delta_time)
+	if(affected_carbon.pain_controller.get_average_pain() <= 20 && SPT_PROB(8, seconds_per_tick))
+		affected_carbon.cause_pain(BODY_ZONES_ALL, 0.5 * seconds_per_tick)
 
-/datum/addiction/opiods/withdrawal_stage_2_process(mob/living/carbon/affected_carbon, delta_time)
+/datum/addiction/opiods/withdrawal_stage_2_process(mob/living/carbon/affected_carbon, seconds_per_tick)
 	. = ..()
 	if(!affected_carbon.pain_controller)
 		return
-	if(affected_carbon.pain_controller.get_average_pain() <= 35 && DT_PROB(8, delta_time))
-		affected_carbon.cause_pain(BODY_ZONES_ALL, 1 * delta_time)
+	if(affected_carbon.pain_controller.get_average_pain() <= 35 && SPT_PROB(8, seconds_per_tick))
+		affected_carbon.cause_pain(BODY_ZONES_ALL, 1 * seconds_per_tick)
 
-/datum/addiction/opiods/withdrawal_stage_3_process(mob/living/carbon/affected_carbon, delta_time)
+/datum/addiction/opiods/withdrawal_stage_3_process(mob/living/carbon/affected_carbon, seconds_per_tick)
 	. = ..()
 	if(!affected_carbon.pain_controller)
 		return
-	if(affected_carbon.pain_controller.get_average_pain() <= 50 && DT_PROB(8, delta_time))
-		affected_carbon.cause_pain(BODY_ZONES_ALL, 1.5 * delta_time)
+	if(affected_carbon.pain_controller.get_average_pain() <= 50 && SPT_PROB(8, seconds_per_tick))
+		affected_carbon.cause_pain(BODY_ZONES_ALL, 1.5 * seconds_per_tick)
 
 // Regen cores.
 /datum/status_effect/regenerative_core/on_apply()

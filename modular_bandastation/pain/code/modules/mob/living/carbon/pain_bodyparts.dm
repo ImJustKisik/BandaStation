@@ -57,15 +57,7 @@
 	if(!owner)
 		return FALSE
 
-	var/base_max_stamina_damage = initial(max_stamina_damage)
-
 	switch(pain)
-		if(10 to 25)
-			max_stamina_damage = base_max_stamina_damage / 1.2
-		if(25 to 50)
-			max_stamina_damage = base_max_stamina_damage / 1.5
-		if(50 to 65)
-			max_stamina_damage = base_max_stamina_damage / 2
 		if(65 to INFINITY)
 			if(can_be_disabled && !HAS_TRAIT_FROM(src, TRAIT_PARALYSIS, PAIN_LIMB_PARALYSIS))
 				to_chat(owner, span_userdanger("Your [name] goes numb from the pain!"))
@@ -83,14 +75,6 @@
 	if(!owner)
 		return FALSE
 
-	var/base_max_stamina_damage = initial(max_stamina_damage)
-	switch(pain)
-		if(0 to 10)
-			max_stamina_damage = base_max_stamina_damage
-		if(10 to 25)
-			max_stamina_damage = base_max_stamina_damage / 1.2
-		if(25 to 50)
-			max_stamina_damage = base_max_stamina_damage / 1.5
 	if(pain < 65 && HAS_TRAIT_FROM(src, TRAIT_PARALYSIS, PAIN_LIMB_PARALYSIS))
 		to_chat(owner, span_green("You can feel your [name] again!"))
 		REMOVE_TRAIT(src, TRAIT_PARALYSIS, PAIN_LIMB_PARALYSIS)
@@ -112,11 +96,8 @@
  *
  * healing_pain - if TRUE, the bodypart has gone some time without recieving pain, and is healing.
  */
-/obj/item/bodypart/proc/pain_feedback(delta_time, healing_pain)
+/obj/item/bodypart/proc/pain_feedback(seconds_per_tick, healing_pain)
 	if(!owner || !pain)
-		return FALSE
-
-	if(owner.has_status_effect(STATUS_EFFECT_DETERMINED))
 		return FALSE
 
 	var/list/feedback_phrases = list()
@@ -140,7 +121,7 @@
 			if(last_recieved_pain_type == BURN)
 				feedback_phrases += list("burns to the touch", "burns", "singes")
 		if(65 to INFINITY)
-			if(DT_PROB(12, delta_time))
+			if(SPT_PROB(12, seconds_per_tick))
 				owner.pain_emote("scream")
 			owner.flash_pain_overlay(2, 2 SECONDS)
 			feedback_phrases += list("is numb from the pain")
@@ -157,11 +138,8 @@
 	pain = PAIN_CHEST_MAX
 	bodypart_pain_modifier = 0.5
 
-/obj/item/bodypart/chest/pain_feedback(delta_time, healing_pain)
+/obj/item/bodypart/chest/pain_feedback(seconds_per_tick, healing_pain)
 	if(!owner || !pain)
-		return FALSE
-
-	if(owner.has_status_effect(STATUS_EFFECT_DETERMINED))
 		return FALSE
 
 	var/list/feedback_phrases = list()
@@ -189,7 +167,7 @@
 			feedback_phrases += list("hurts madly", "is in agony", "is anguishing", "burns to the touch", "feels terrible", "feels constricted")
 			side_feedback += list("You feel your ribs jostle in your [name]")
 
-	if(side_feedback.len && last_recieved_pain_type == BRUTE && DT_PROB(50, delta_time))
+	if(side_feedback.len && last_recieved_pain_type == BRUTE && SPT_PROB(50, seconds_per_tick))
 		to_chat(owner, span_danger("[pick(side_feedback)][healing_pain ? ", [pick(healing_phrases)]." : "!"]"))
 	else if(feedback_phrases.len)
 		to_chat(owner, span_danger("Your [name] [pick(feedback_phrases)][healing_pain ? ", [pick(healing_phrases)]." : "!"]"))
@@ -214,7 +192,7 @@
 
 	return TRUE
 
-/obj/item/bodypart/head/pain_feedback(delta_time, healing_pain)
+/obj/item/bodypart/head/pain_feedback(seconds_per_tick, healing_pain)
 	if(!owner || !pain)
 		return FALSE
 
@@ -241,7 +219,7 @@
 			feedback_phrases += list("hurts madly", "is in agony", "is anguishing", "feels terrible", "is in agony", "feels tense")
 			side_feedback += list("You feel a splitting migrane", "Pressure floods your [name]", "Your head feels as if it's being squeezed", "Your eyes hurt to keep open")
 
-	if(side_feedback.len && last_recieved_pain_type == BRUTE && DT_PROB(50, delta_time))
+	if(side_feedback.len && last_recieved_pain_type == BRUTE && SPT_PROB(50, seconds_per_tick))
 		to_chat(owner, span_danger("[pick(side_feedback)][healing_pain ? ", [pick(healing_phrases)]." : "!"]"))
 	else if(feedback_phrases.len)
 		to_chat(owner, span_danger("Your [name] [pick(feedback_phrases)][healing_pain ? ", [pick(healing_phrases)]." : "!"]"))
@@ -257,12 +235,12 @@
 	pain = 40
 	bodypart_pain_modifier = 0.8
 
-/obj/item/bodypart/r_leg/processed_pain_effects(delta_time)
+/obj/item/bodypart/r_leg/processed_pain_effects(seconds_per_tick)
 	. = ..()
 	if(!.)
 		return FALSE
 
-	if(get_modified_pain() > 30 && DT_PROB(10, delta_time))
+	if(get_modified_pain() > 30 && SPT_PROB(10, seconds_per_tick))
 		if(owner.apply_status_effect(STATUS_EFFECT_LIMP_PAIN))
 			to_chat(owner, span_danger("Your [name] hurts to walk on!"))
 
@@ -277,12 +255,12 @@
 	pain = 40
 	bodypart_pain_modifier = 0.8
 
-/obj/item/bodypart/l_leg/processed_pain_effects(delta_time)
+/obj/item/bodypart/l_leg/processed_pain_effects(seconds_per_tick)
 	. = ..()
 	if(!.)
 		return FALSE
 
-	if(get_modified_pain() > 30 && DT_PROB(10, delta_time))
+	if(get_modified_pain() > 30 && SPT_PROB(10, seconds_per_tick))
 		if(owner.apply_status_effect(STATUS_EFFECT_LIMP_PAIN))
 			to_chat(owner, span_danger("Your [name] hurts to walk on!"))
 

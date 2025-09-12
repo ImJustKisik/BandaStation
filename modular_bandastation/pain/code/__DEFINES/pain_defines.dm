@@ -48,3 +48,10 @@
 #define ACTIONSPEED_ID_PAIN "pain_actionspeed"
 #define TRAIT_EXTRA_PAIN "extra_pain"
 #define TRAIT_OFF_STATION_PAIN_RESISTANCE "pain_resistance_off_station"
+
+#ifndef PAIN_DEFINES_DM
+#define PAIN_DEFINES_DM
+
+#define DT_PROB(prob, delta_time) (rand(0, 100) < (prob * delta_time))
+
+#endif

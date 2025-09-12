@@ -16,7 +16,7 @@ export const RuNamesSuggestPanel = (props) => {
   return (
     <Window theme="admin" title="Предложение перевода" width={450} height={250}>
       <Window.Content />
-      <Section title={'Оригинал: ' + visible_name}>
+      <Section title={`Оригинал: ${visible_name}`}>
         <LabeledList>
           <LabeledList.Item label="Именительный (Кто? Что?)">
             <Input

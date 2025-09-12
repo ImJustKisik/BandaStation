@@ -168,8 +168,8 @@ const RitualPrintout = (props: { ritual: GrandRitual }) => {
   return (
     <Box>
       Кроме того, выполните{' '}
-      <span style={grandritualstyle}>Великий ритуал </span>
-      - вызывая ритуальный круг в нескольких центрах силы.
+      <span style={grandritualstyle}>Великий ритуал </span>- вызывая ритуальный
+      круг в нескольких центрах силы.
       <br />
       Вы должны завершить ритуал еще
       <span style={grandritualstyle}> {ritual.remaining}</span> раз.

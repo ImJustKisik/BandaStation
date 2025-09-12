@@ -20,8 +20,7 @@
 	else if(resize_amount < 0.9)
 		ADD_TRAIT(quirk_holder, TRAIT_DWARF, ROUNDSTART_TRAIT)
 
-	quirk_holder.resize = resize_amount
-	quirk_holder.update_transform()
+	quirk_holder.update_transform(resize_amount)
 	quirk_holder.base_pixel_y += y_offset
 	quirk_holder.pixel_y += y_offset
 
@@ -31,8 +30,7 @@
 	else if(resize_amount < 0.9)
 		REMOVE_TRAIT(quirk_holder, TRAIT_DWARF, ROUNDSTART_TRAIT)
 
-	quirk_holder.resize = 1/resize_amount
-	quirk_holder.update_transform()
+	quirk_holder.update_transform(1/resize_amount)
 	quirk_holder.base_pixel_y -= y_offset
 	quirk_holder.pixel_y -= y_offset
 
@@ -129,13 +127,3 @@
 	lose_text = "<span class='notice'>You no longer understand Nekomimetic.</span>"
 	medical_record_text = "Patient is trilingual and knows Nekomimetic."
 	added_language = /datum/language/nekomimetic
-
-// Skrellian
-/datum/quirk/trilingual/skrell
-	name = "Language - Skrellian"
-	desc = "You're trilingual - you know the Skrellian language along with common and your native tongue."
-	value = 0
-	gain_text = "<span class='notice'>You understand Skrellian.</span>"
-	lose_text = "<span class='notice'>You no longer understand Skrellian.</span>"
-	medical_record_text = "Patient is trilingual and knows Skrellian."
-	added_language = /datum/language/skrell

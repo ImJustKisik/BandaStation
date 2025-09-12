@@ -62,21 +62,6 @@
 	quirk_holder_languages.remove_language(added_language, TRUE, TRUE, LANGUAGE_QUIRK)
 
 /// High draconic language. Only works on draconic speakers.
-/datum/quirk/trilingual/high_draconic
-	name = "Language - High Draconic"
-	desc = "You're trilingual - you know old High Draconic. (This quirk only works for species that can speak draconic!)"
-	value = 1
-	gain_text = "<span class='notice'>You understand High Draconic.</span>"
-	lose_text = "<span class='notice'>You no longer understand High Draconic.</span>"
-	medical_record_text = "Patient is trilingual and knows High Draconic."
-	added_language = /datum/language/impdraconic
-
-/datum/quirk/trilingual/high_draconic/post_add()
-	var/datum/language_holder/quirk_holder_languages = quirk_holder.get_language_holder()
-	if(!quirk_holder_languages.has_language(/datum/language/draconic, TRUE))
-		added_language = null
-		return
-	. = ..()
 
 /datum/quirk/no_appendix
 	name = "Appendicitis Survivor"
@@ -88,7 +73,7 @@
 
 /datum/quirk/no_appendix/post_add()
 	var/mob/living/carbon/carbon_quirk_holder = quirk_holder
-	var/obj/item/organ/appendix/dumb_appendix = carbon_quirk_holder.getorganslot(ORGAN_SLOT_APPENDIX)
+	var/obj/item/organ/appendix/dumb_appendix = carbon_quirk_holder.get_organ_slot(ORGAN_SLOT_APPENDIX)
 	dumb_appendix.Remove(quirk_holder, TRUE)
 
 // Less vulnerable to pain (lower pain modifier)

@@ -10,7 +10,6 @@
 #include "code/datums/quirks/neutral.dm"
 #include "code/modules/admin/smites/pain_smite.dm"
 #include "code/modules/library/skill_learning/job_skillchips/mining.dm"
-#include "code/modules/mining/machine_vending.dm"
 #include "code/modules/mob/living/carbon/pain_bodyparts.dm"
 #include "code/modules/mob/living/carbon/pain_causes.dm"
 #include "code/modules/mob/living/carbon/pain_effects.dm"

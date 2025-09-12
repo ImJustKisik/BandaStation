@@ -29,6 +29,7 @@ import { Log } from './Log';
 import { StateSelectModal } from './StateSelectModal';
 import { TaskManager } from './TaskManager';
 import type { CallInfo, LuaEditorData, LuaEditorModal } from './types';
+
 hljs.registerLanguage('lua', lua);
 
 export const LuaEditor = () => {

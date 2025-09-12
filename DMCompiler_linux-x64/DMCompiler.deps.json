@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v9.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v9.0": {
+      "DMCompiler/1.0.0": {
+        "dependencies": {
+          "Robust.Shared.Maths": "266.0.0"
+        },
+        "runtime": {
+          "DMCompiler.dll": {}
+        }
+      },
+      "Robust.Shared.Maths/266.0.0": {
+        "runtime": {
+          "Robust.Shared.Maths.dll": {
+            "assemblyVersion": "266.0.0.0",
+            "fileVersion": "266.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "DMCompiler/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Robust.Shared.Maths/266.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

@@ -1,4 +1,9 @@
-import { type KeyboardEvent, type RefObject, type SetStateAction, useCallback } from 'react';
+import {
+  type KeyboardEvent,
+  type RefObject,
+  type SetStateAction,
+  useCallback,
+} from 'react';
 import { Box, Button, Section, TextArea } from 'tgui-core/components';
 import { KEY } from 'tgui-core/keys';
 import { debounce } from 'tgui-core/timer';

@@ -23,7 +23,7 @@
 //Extends the initialization proc, adding the module blacklists we have after the main init finishes.
 /datum/controller/subsystem/processing/quirks/Initialize()
 	. = ..()
-	quirk_blacklist.Add(module_blacklist)
+	GLOB.quirk_blacklist.Add(module_blacklist)
 
 #undef SIZE_QUIRKS
 #undef LANG_QUIRKS

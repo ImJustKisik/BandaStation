@@ -15,9 +15,9 @@
 	A.affected_mob.unset_pain_mod(PAIN_MOD_YOUTH)
 
 // Some Traumas
-/datum/brain_trauma/mild/concussion/on_life(delta_time, times_fired)
+/datum/brain_trauma/mild/concussion/on_life(seconds_per_tick, times_fired)
 	. = ..()
-	if(DT_PROB(1, delta_time))
+	if(SPT_PROB(1, seconds_per_tick))
 		owner.cause_pain(BODY_ZONE_HEAD, 10)
 
 /datum/brain_trauma/special/tenacity/on_gain()
@@ -32,10 +32,10 @@
 /mob/living/carbon/human/set_health(new_value)
 	. = ..()
 	if(HAS_TRAIT_FROM(src, TRAIT_SIXTHSENSE, "near-death"))
-		SEND_SIGNAL(src, COMSIG_ADD_MOOD_EVENT, "near-death", /datum/mood_event/deaths_door)
+		add_mood_event("near-death", /datum/mood_event/deaths_door)
 		set_pain_mod(PAIN_MOD_NEAR_DEATH, 0.1)
 	else
-		SEND_SIGNAL(src, COMSIG_CLEAR_MOOD_EVENT, "near-death")
+		clear_mood_event("near-death")
 		unset_pain_mod(PAIN_MOD_NEAR_DEATH)
 
 // Stasis - This is a bit of a cop-out.

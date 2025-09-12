@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Button, Input, Section, Stack } from 'tgui-core/components';
 import { isEscape } from 'tgui-core/keys';
 import { clamp } from 'tgui-core/math';
