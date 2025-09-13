@@ -124,6 +124,17 @@
 	desc = "Water, in gas form. Makes things slippery."
 	primary_color = "#b0c4de"
 
+/datum/gas/steam
+	id = GAS_STEAM
+	specific_heat = 200 // Higher than water vapor, carries more energy
+	name = "Steam"
+	gas_overlay = "water_vapor" // Can reuse the water vapor overlay for now
+	moles_visible = MOLES_GAS_VISIBLE
+	fusion_power = 10 // Can make it interact with fusion later
+	rarity = 0 // Not naturally occurring
+	desc = "Extremely hot, high-energy water vapor, capable of powering turbines."
+	primary_color = "#f5f5f5" // A whitish-gray
+
 /datum/gas/hypernoblium
 	id = GAS_HYPER_NOBLIUM
 	specific_heat = 2000

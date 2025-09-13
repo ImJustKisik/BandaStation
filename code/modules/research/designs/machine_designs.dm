@@ -41,6 +41,66 @@
 	)
 	departmental_flags = DEPARTMENT_BITFLAG_ENGINEERING
 
+/datum/design/board/fission_control
+	name = "Fission Reactor Control Console Board"
+	desc = "The circuit board for a fission reactor control console."
+	id = "fission_control"
+	build_path = /obj/item/circuitboard/machine/fission_control
+	category = list(
+		RND_CATEGORY_MACHINE + RND_SUBCATEGORY_MACHINE_ENGINEERING
+	)
+	departmental_flags = DEPARTMENT_BITFLAG_ENGINEERING | DEPARTMENT_BITFLAG_SCIENCE
+
+/datum/design/board/fission_core
+	name = "Fission Reactor Core Board"
+	desc = "The circuit board for a fission reactor core."
+	id = "fission_core"
+	build_path = /obj/item/circuitboard/machine/fission_core
+	category = list(
+		RND_CATEGORY_MACHINE + RND_SUBCATEGORY_MACHINE_ENGINEERING
+	)
+	departmental_flags = DEPARTMENT_BITFLAG_ENGINEERING | DEPARTMENT_BITFLAG_SCIENCE
+
+/datum/design/board/fission_fuel_channel
+	name = "Fission Fuel Channel Board"
+	desc = "The circuit board for a fission reactor fuel channel."
+	id = "fission_fuel_channel"
+	build_path = /obj/item/circuitboard/machine/fission_fuel_channel
+	category = list(
+		RND_CATEGORY_MACHINE + RND_SUBCATEGORY_MACHINE_ENGINEERING
+	)
+	departmental_flags = DEPARTMENT_BITFLAG_ENGINEERING | DEPARTMENT_BITFLAG_SCIENCE
+
+/datum/design/board/fission_rod_assembly
+	name = "Fission Control Rod Assembly Board"
+	desc = "The circuit board for a fission reactor control rod assembly."
+	id = "fission_rod_assembly"
+	build_path = /obj/item/circuitboard/machine/fission_rod_assembly
+	category = list(
+		RND_CATEGORY_MACHINE + RND_SUBCATEGORY_MACHINE_ENGINEERING
+	)
+	departmental_flags = DEPARTMENT_BITFLAG_ENGINEERING | DEPARTMENT_BITFLAG_SCIENCE
+
+/datum/design/board/fission_graphite_moderator
+	name = "Fission Graphite Moderator Board"
+	desc = "The circuit board for a fission reactor graphite moderator."
+	id = "fission_graphite_moderator"
+	build_path = /obj/item/circuitboard/machine/fission_graphite_moderator
+	category = list(
+		RND_CATEGORY_MACHINE + RND_SUBCATEGORY_MACHINE_ENGINEERING
+	)
+	departmental_flags = DEPARTMENT_BITFLAG_ENGINEERING | DEPARTMENT_BITFLAG_SCIENCE
+
+/datum/design/board/steam_turbine
+	name = "Steam Turbine Board"
+	desc = "The circuit board for a steam turbine."
+	id = "steam_turbine"
+	build_path = /obj/item/circuitboard/machine/steam_turbine
+	category = list(
+		RND_CATEGORY_MACHINE + RND_SUBCATEGORY_MACHINE_ENGINEERING
+	)
+	departmental_flags = DEPARTMENT_BITFLAG_ENGINEERING | DEPARTMENT_BITFLAG_SCIENCE
+
 /datum/design/board/announcement_system
 	name = "Automated Announcement System Board"
 	desc = "The circuit board for an automated announcement system."
