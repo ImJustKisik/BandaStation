@@ -22,6 +22,9 @@
 #define CRITICAL_TEMPERATURE 2000
 #define VOID_COEFFICIENT_BONUS 15
 #define SCRAM_REACTIVITY_SPIKE 50
+#define BLUESPACE_REACTIVITY_MODIFIER 50
+#define BLUESPACE_HEAT_MODIFIER 0.1
+#define TELECRYSTAL_REACTIVITY_MODIFIER 15
 
 /obj/machinery/power/fission/core
 	name = "fission reactor core"
@@ -140,20 +143,31 @@
 
 	// Step 1 & 2: Calculate reactivity from fuel and moderators
 	reactivity = 0
+	var/total_heat_modifier = 1
+	var/found_bluespace_rod = FALSE
+
 	for(var/obj/machinery/atmospherics/pipe/simple/fuel_channel/FC in fuel_assemblies)
 		if(FC.rod && FC.rod.fuel_amount > 0)
-			reactivity += FUEL_REACTIVITY_MODIFIER
+			var/obj/item/fission/fuel_rod/R = FC.rod
+			if(istype(R, /obj/item/fission/fuel_rod/bluespace))
+				reactivity += BLUESPACE_REACTIVITY_MODIFIER
+				total_heat_modifier *= BLUESPACE_HEAT_MODIFIER
+				found_bluespace_rod = TRUE
+			else if (istype(R, /obj/item/fission/fuel_rod/telecrystal))
+				reactivity += TELECRYSTAL_REACTIVITY_MODIFIER
+			else // Standard rod
+				reactivity += FUEL_REACTIVITY_MODIFIER
 
 			// Positive Void Coefficient
 			if(!FC.parent || !FC.parent.air || FC.parent.air.total_moles() < 1)
 				reactivity += VOID_COEFFICIENT_BONUS
 
 			// Step 2.3: Fuel Consumption
-			FC.rod.fuel_amount = max(0, FC.rod.fuel_amount - (reactivity * FUEL_CONSUMPTION_RATE * delta_time))
-			if(FC.rod.fuel_amount <= 0)
+			R.fuel_amount = max(0, R.fuel_amount - (reactivity * FUEL_CONSUMPTION_RATE * delta_time))
+			if(R.fuel_amount <= 0)
 				// Turn into spent fuel
 				new /obj/item/fission/spent_fuel_rod(FC)
-				qdel(FC.rod)
+				qdel(R)
 				FC.rod = null
 
 
@@ -167,8 +181,13 @@
 
 	// Step 4: Final reactivity and heat generation
 	reactivity = max(0, reactivity)
-	var/heat_generated = reactivity * HEAT_PER_REACTIVITY_POINT * delta_time
+	var/heat_generated = reactivity * HEAT_PER_REACTIVITY_POINT * delta_time * total_heat_modifier
 	reactor_temperature += heat_generated
+
+	if(found_bluespace_rod)
+		var/obj/item/fission/fuel_rod/bluespace/B = FC.rod
+		if(prob(B.bluespace_anomaly_chance))
+			trigger_bluespace_anomaly()
 
 	// Simple power output calculation for now
 	power_output = reactivity * 10000 // Placeholder
@@ -187,6 +206,12 @@
 		var/rad_chance = reactivity * 5
 		radiation_pulse(src, max_range = rad_range, chance = rad_chance)
 
+	// Bluespace rod production under extreme conditions
+	if(reactor_temperature > (CRITICAL_TEMPERATURE * 1.5) && reactivity > 50)
+		if(prob(1)) // 1% chance per tick under these conditions
+			to_chat(world, span_boldwarning("The intense forces within the reactor core tear a hole in reality!"))
+			new /obj/item/fission/fuel_rod/bluespace(get_turf(src))
+
 	update_icon()
 
 /obj/machinery/power/fission/core/attackby(obj/item/I, mob/user, params)
@@ -195,6 +220,12 @@
 	if(default_deconstruction_crowbar(I))
 		return
 	return ..()
+
+/obj/machinery/power/fission/core/proc/trigger_bluespace_anomaly()
+	to_chat(world, span_userdanger("A tear in reality forms near the reactor!"))
+	// Create a temporary bluespace anomaly that will zap someone nearby
+	var/obj/effect/anomaly/bluespace/A = new /obj/effect/anomaly/bluespace(get_turf(src))
+	addtimer(CALLBACK(A, /atom/proc/qdel), 10 SECONDS) // Anomaly lasts for 10 seconds
 
 /obj/machinery/power/fission/core/proc/update_icon()
 	if(is_active && reactivity > 0)

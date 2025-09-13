@@ -22,5 +22,8 @@ All components must be wrenched down and form a single, contiguous structure aro
 7. The heat will turn the coolant into steam. This steam must be fed into Steam Turbines to generate power.<br><br>
 <b><u>4. SAFETY WARNINGS</u></b><br>
 <ul><li><b>OVERHEATING:</b> Exceeding the core's thermal limits will cause structural damage, leading to a meltdown and catastrophic explosion.</li><li><b>POSITIVE VOID COEFFICIENT:</b> This reactor is inherently unstable. A loss of coolant will cause a rapid, uncontrolled spike in reactivity. NEVER run the reactor without active coolant flow.</li><li><b>SCRAM (АЗ-5):</b> The emergency shutdown button is a last resort. Due to a design feature, initiating a SCRAM will cause a brief but massive reactivity spike before the rods fully insert. Under high-power conditions, this can trigger a meltdown.</li><li><b>RADIATION:</b> The active core and spent fuel are highly radioactive. Always wear appropriate radiation protection.</li></ul>
-<center><i>Nanotrasen is not liable for any localized reality failure resulting from improper reactor operation.</i></center>
+<center><i>Nanotrasen is not liable for any localized reality failure resulting from improper reactor operation.</i></center><br><br>
+<b><u>5. Exotic Fuel Types</u></b><br>
+Standard uranium rods are not the only fuel source available. Advanced research or extreme reactor conditions may yield exotic fuel rods with unique properties:<br>
+<ul><li><b>Bluespace Rods:</b> These rods produce immense power with very little heat, but their operation destabilizes local spacetime, occasionally causing dangerous spatial anomalies near the core.</li><li><b>Telecrystal Rods:</b> These rods produce a moderate amount of power. Their unique property is their reaction to radiation; instead of simply decaying, they can absorb ambient radiation from the core to grow and eventually produce new telecrystal sheets.</li></ul>
 "}

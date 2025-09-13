@@ -37,3 +37,32 @@
 		threshold = RAD_MEDIUM_INSULATION,
 		examine_text = span_danger("It is glowing with a faint, ominous green light.")
 	)
+
+/obj/item/fission/fuel_rod/bluespace
+	name = "bluespace fuel rod"
+	desc = "A fuel rod infused with bluespace crystals. It hums with a strange energy, warping spacetime around it."
+	icon_state = "fuel_rod_bluespace" // Placeholder
+	var/bluespace_anomaly_chance = 5 // Percent chance per tick to cause an anomaly
+
+/obj/item/fission/fuel_rod/telecrystal
+	name = "telecrystal fuel rod"
+	desc = "A fuel rod embedded with a large telecrystal. It seems to react to intense radiation."
+	icon_state = "fuel_rod_telecrystal" // Placeholder
+	var/crystal_growth = 0
+
+/obj/item/fission/fuel_rod/telecrystal/Initialize(mapload)
+	. = ..()
+	RegisterSignal(src, COMSIG_IN_THRESHOLD_OF_IRRADIATION, PROC_REF(OnIrradiated))
+
+/obj/item/fission/fuel_rod/telecrystal/Destroy()
+	UnregisterSignal(src, COMSIG_IN_THRESHOLD_OF_IRRADIATION)
+	return ..()
+
+/obj/item/fission/fuel_rod/telecrystal/proc/OnIrradiated(datum/source, datum/radiation_pulse_information/pulse_information)
+	SIGNAL_HANDLER
+	if(prob(10)) // 10% chance to grow per radiation pulse
+		crystal_growth += 5
+		if(crystal_growth >= 100)
+			to_chat(world, span_userdanger("The telecrystal rod pulses with a resonant energy!"))
+			new /obj/item/stack/sheet/telecrystal(get_turf(src))
+			crystal_growth = 0

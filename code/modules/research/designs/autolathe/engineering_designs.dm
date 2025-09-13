@@ -227,6 +227,30 @@
 	)
 	departmental_flags = DEPARTMENT_BITFLAG_ENGINEERING
 
+/datum/design/fission_fuel_rod_bluespace
+	name = "Bluespace Fuel Rod"
+	id = "fission_fuel_rod_bluespace"
+	build_type = PROTOLATHE
+	materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT*2, /datum/material/bluespace = SHEET_MATERIAL_AMOUNT)
+	build_path = /obj/item/fission/fuel_rod/bluespace
+	category = list(
+		RND_CATEGORY_HACKED,
+		RND_CATEGORY_POWER + RND_SUBCATEGORY_POWER_FISSION,
+	)
+	departmental_flags = DEPARTMENT_BITFLAG_ENGINEERING | DEPARTMENT_BITFLAG_SCIENCE
+
+/datum/design/fission_fuel_rod_telecrystal
+	name = "Telecrystal Fuel Rod"
+	id = "fission_fuel_rod_telecrystal"
+	build_type = PROTOLATHE
+	materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT*2, /datum/material/telecrystal = SHEET_MATERIAL_AMOUNT)
+	build_path = /obj/item/fission/fuel_rod/telecrystal
+	category = list(
+		RND_CATEGORY_HACKED,
+		RND_CATEGORY_POWER + RND_SUBCATEGORY_POWER_FISSION,
+	)
+	departmental_flags = DEPARTMENT_BITFLAG_ENGINEERING | DEPARTMENT_BITFLAG_SCIENCE
+
 /datum/design/pocketfireextinguisher
 	name = "Pocket Fire Extinguisher"
 	id = "pocketfireextinguisher"
