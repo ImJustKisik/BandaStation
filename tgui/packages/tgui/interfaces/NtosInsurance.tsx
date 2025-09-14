@@ -60,7 +60,7 @@ enum InsuranceTier {
   Premium = 2,
 }
 
-const tierLabel = (v: string) => {
+function tierLabel(v: string) {
   switch ((v || '').toLowerCase()) {
     case 'standard':
       return 'Стандарт';
@@ -69,9 +69,9 @@ const tierLabel = (v: string) => {
     default:
       return 'Нет';
   }
-};
+}
 
-export const NtosInsurance = () => {
+export function NtosInsurance() {
   return (
     <NtosWindow width={560} height={650} title="Менеджер страховки">
       <NtosWindow.Content>
@@ -79,9 +79,9 @@ export const NtosInsurance = () => {
       </NtosWindow.Content>
     </NtosWindow>
   );
-};
+}
 
-const InsuranceContent = () => {
+function InsuranceContent() {
   const { data } = useBackend<Data>();
   const { name } = data;
   const [tab, setTab] = useState<'billing' | 'tiers' | 'logs'>('billing');
@@ -121,19 +121,19 @@ const InsuranceContent = () => {
       </Stack.Item>
     </Stack>
   );
-};
+}
 
-const BillingTab = () => {
+function BillingTab() {
   const { act, data } = useBackend<Data>();
   const [target, setTarget] = useState('');
   const [amount, setAmount] = useState(0);
   const [reason, setReason] = useState(DEFAULT_BILL_REASON_RU);
 
-  const handleSelectPatient = (value: string | number) => {
+  function handleSelectPatient(value: string | number) {
     setTarget(String(value));
     setAmount(0);
     setReason(DEFAULT_BILL_REASON_RU);
-  };
+  }
 
   return (
     <Stack fill vertical>
@@ -263,7 +263,7 @@ const BillingTab = () => {
       ) : null}
     </Stack>
   );
-};
+}
 
 const tierOptions = [
   {
@@ -286,7 +286,7 @@ const tierOptions = [
   },
 ];
 
-const TiersTab = () => {
+function TiersTab() {
   const { act, data } = useBackend<Data>();
   const desired = (data.insurance_desired || '').toLowerCase();
   const tierDisabled = !data.name || data.is_dept || data.payer_account_id <= 0;
@@ -313,9 +313,9 @@ const TiersTab = () => {
       </Stack>
     </Section>
   );
-};
+}
 
-const CmoLogs = () => {
+function CmoLogs() {
   const { act, data } = useBackend<Data>();
   const hist = data.cmo_history ?? [];
   const kiosk = data.cmo_kiosk_report ?? { total: 0, covered: 0 };
@@ -361,4 +361,4 @@ const CmoLogs = () => {
       </Stack.Item>
     </Stack>
   );
-};
+}
