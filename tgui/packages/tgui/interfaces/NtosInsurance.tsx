@@ -28,8 +28,6 @@ type Data = {
   is_med_staff?: boolean;
   is_cmo?: boolean;
   crew_names?: string[];
-  surgeries?: { name: string; price: number }[];
-  tariffs?: { name: string; price: number }[];
   pending_bills?: {
     id: number;
     amount: number;
@@ -60,15 +58,34 @@ enum InsuranceTier {
   Premium = 2,
 }
 
+const tierOptions = [
+  {
+    key: 'none',
+    title: 'Нет',
+    description: 'Страховки нет.',
+    tier: InsuranceTier.None,
+  },
+  {
+    key: 'standard',
+    title: 'Стандарт',
+    description: 'Скидка в медкиоске: 50%.',
+    tier: InsuranceTier.Standard,
+  },
+  {
+    key: 'premium',
+    title: 'Премиум',
+    description: 'Скидка в медкиоске: 100%.',
+    tier: InsuranceTier.Premium,
+  },
+];
+
+const tierMap = tierOptions.reduce<Record<string, string>>((acc, t) => {
+  acc[t.key] = t.title;
+  return acc;
+}, {});
+
 function tierLabel(v: string) {
-  switch ((v || '').toLowerCase()) {
-    case 'standard':
-      return 'Стандарт';
-    case 'premium':
-      return 'Премиум';
-    default:
-      return 'Нет';
-  }
+  return tierMap[(v || '').toLowerCase()] || 'Нет';
 }
 
 export function NtosInsurance() {
@@ -125,12 +142,12 @@ function InsuranceContent() {
 
 function BillingTab() {
   const { act, data } = useBackend<Data>();
-  const [target, setTarget] = useState('');
+  const [patient, setPatient] = useState('');
   const [amount, setAmount] = useState(0);
   const [reason, setReason] = useState(DEFAULT_BILL_REASON_RU);
 
   function handleSelectPatient(value: string | number) {
-    setTarget(String(value));
+    setPatient(String(value));
     setAmount(0);
     setReason(DEFAULT_BILL_REASON_RU);
   }
@@ -198,8 +215,8 @@ function BillingTab() {
             <LabeledList>
               <LabeledList.Item label="Имя пациента">
                 <Dropdown
-                  selected={target}
-                  displayText={target || 'Выберите...'}
+                  selected={patient}
+                  displayText={patient || 'Выберите...'}
                   options={(data.crew_names ?? []).map((n) => ({
                     value: n,
                     displayText: n,
@@ -225,9 +242,9 @@ function BillingTab() {
             <Box mt={1}>
               <Button
                 color="bad"
-                disabled={!target || amount <= 0}
+                disabled={!patient || amount <= 0}
                 onClick={() =>
-                  act('bill_patient', { name: target, amount, reason })
+                  act('bill_patient', { name: patient, amount, reason })
                 }
               >
                 Выставить счёт
@@ -264,27 +281,6 @@ function BillingTab() {
     </Stack>
   );
 }
-
-const tierOptions = [
-  {
-    key: 'none',
-    title: 'Нет',
-    description: 'Страховки нет.',
-    tier: InsuranceTier.None,
-  },
-  {
-    key: 'standard',
-    title: 'Стандарт',
-    description: 'Скидка в медкиоске: 50%.',
-    tier: InsuranceTier.Standard,
-  },
-  {
-    key: 'premium',
-    title: 'Премиум',
-    description: 'Скидка в медкиоске: 100%.',
-    tier: InsuranceTier.Premium,
-  },
-];
 
 function TiersTab() {
   const { act, data } = useBackend<Data>();
