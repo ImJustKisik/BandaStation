@@ -1,0 +1,5 @@
+#include "_modular_armor.dm"
+
+#include "code/modular_armor.dm"
+#include "code/loadbearing.dm"
+
