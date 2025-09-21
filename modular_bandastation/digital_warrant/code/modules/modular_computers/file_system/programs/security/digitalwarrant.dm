@@ -96,9 +96,7 @@
 			if(active_warrant)
 				active_warrant.namewarrant = name
 				active_warrant.jobwarrant = job
-				active_warrant.auth = "Unauthorized"
-				active_warrant.idauth = "Unauthorized"
-				active_warrant.access = list()
+				active_warrant.reset_authorization()
 			else if(new_warrant_data)
 				new_warrant_data["namewarrant"] = name
 				new_warrant_data["jobwarrant"] = job
@@ -109,9 +107,7 @@
 			if(active_warrant)
 				active_warrant.namewarrant = isnull(params["name"]) ? active_warrant.namewarrant : sanitize(params["name"])
 				active_warrant.jobwarrant = isnull(params["job"]) ? active_warrant.jobwarrant : sanitize(params["job"])
-				active_warrant.auth = "Unauthorized"
-				active_warrant.idauth = "Unauthorized"
-				active_warrant.access = list()
+				active_warrant.reset_authorization()
 			else if(new_warrant_data)
 				new_warrant_data["namewarrant"] = isnull(params["name"]) ? new_warrant_data["namewarrant"] : sanitize(params["name"])
 				new_warrant_data["jobwarrant"] = isnull(params["job"]) ? new_warrant_data["jobwarrant"] : sanitize(params["job"])
@@ -121,33 +117,40 @@
 		if("edit_charges")
 			if(active_warrant)
 				active_warrant.charges = isnull(params["charges"]) ? active_warrant.charges : sanitize(params["charges"])
-				active_warrant.auth = "Unauthorized"
-				active_warrant.idauth = "Unauthorized"
-				active_warrant.access = list()
+				active_warrant.reset_authorization()
 			else if(new_warrant_data)
 				new_warrant_data["charges"] = isnull(params["charges"]) ? new_warrant_data["charges"] : sanitize(params["charges"])
 				new_warrant_data["auth"] = "Unauthorized"
 				new_warrant_data["idauth"] = "Unauthorized"
 			return TRUE
 		if("authorize")
-			if(!active_warrant || !I)
+			if(!active_warrant)
+				return TRUE
+			if(!I)
+				ui.user << tgui_alert(ui.user, "You must have an ID card equipped.")
 				return TRUE
 			active_warrant.auth = "[I.registered_name] - [I.assignment ? I.assignment : "(Unknown)"]"
 			return TRUE
 		if("authorize_access")
-			if(!active_warrant || active_warrant.arrestsearch == "search" || !I)
+			if(!active_warrant || active_warrant.arrestsearch == "search")
+				return TRUE
+			if(!I)
+				ui.user << tgui_alert(ui.user, "You must have an ID card equipped to authorize access.")
 				return TRUE
 			if(!(ACCESS_CHANGE_IDS in I.access))
+				ui.user << tgui_alert(ui.user, "Your ID card lacks the required access (Access Management).")
 				return TRUE
 			var/datum/record/crew/warrant_subject
 			var/datum/job/J = SSjob.get_job(active_warrant.jobwarrant)
 			if(!J)
+				ui.user << tgui_alert(ui.user, "Invalid job specified in warrant: '[active_warrant.jobwarrant]'.")
 				return TRUE
 			for(var/datum/record/crew/CR in GLOB.manifest.general)
 				if(CR.name == active_warrant.namewarrant && CR.rank == active_warrant.jobwarrant)
 					warrant_subject = CR
 					break
 			if(!warrant_subject)
+				ui.user << tgui_alert(ui.user, "Could not find '[active_warrant.namewarrant]' with the job '[active_warrant.jobwarrant]' in the crew manifest.")
 				return TRUE
 			var/list/warrant_access = get_job_accesses(J)
 			if(islist(warrant_access))

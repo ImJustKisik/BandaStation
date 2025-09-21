@@ -10,3 +10,8 @@ GLOBAL_LIST_EMPTY_TYPED(all_warrants, /datum/digital_warrant)
 	var/list/access = list()
 	var/arrestsearch = "arrest"
 	var/archived = FALSE
+
+/datum/digital_warrant/proc/reset_authorization()
+	auth = "Unauthorized"
+	idauth = "Unauthorized"
+	access = list()

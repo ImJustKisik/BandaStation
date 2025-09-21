@@ -15,61 +15,46 @@
 	req_one_access = list(ACCESS_COMMAND, ACCESS_SECURITY)
 	var/datum/digital_warrant/active
 
+/obj/item/device/holowarrant/proc/is_active_warrant_valid()
+	return active && (active in GLOB.all_warrants)
+
 /obj/item/device/holowarrant/examine(mob/user)
 	. = ..()
-	if(active)
+	if(is_active_warrant_valid())
 		. += "It's a holographic warrant for '[active.namewarrant]'."
-	if(in_range(src, user))
-		show_content(user)
-	else
-		. += span_notice("You have to be closer if you want to read it.")
+		if(in_range(src, user))
+			show_content(user)
+		else
+			. += span_notice("You have to be closer if you want to read it.")
 
 /obj/item/device/holowarrant/GetAccess()
 	. = list()
-	if(!active || active.archived)
+	if(!is_active_warrant_valid() || active.archived)
 		return
 	. |= active.access
 
 /obj/item/device/holowarrant/attack_self(mob/living/user)
 	active = null
-	var/list/warrants = list()
+	var/list/warrant_options = list()
+	var/list/warrant_map = list()
 	for(var/datum/digital_warrant/W in GLOB.all_warrants)
 		if(!W.archived)
-			warrants["[W.namewarrant] ([capitalize(W.arrestsearch)])"] = W
-	if(!length(warrants))
-		to_chat(user, span_notice("There are no warrants available"))
-		update_appearance()
-		return
-	var/datum/digital_warrant/temp = input(user, "Which warrant would you like to load?") as null|anything in warrants
-	if(!temp)
-		update_appearance()
-		return
-	// Post-input context checks to mitigate input stalling exploits (see STANDARDS.md)
-	if(QDELETED(src) || !user || !user.can_perform_action(src) || !in_range(src, user))
-		update_appearance()
-		return
-	active = warrants[temp]
-	update_appearance()
+			var/desc = "[W.namewarrant] ([capitalize(W.arrestsearch)]) - [REF(W)]"
+			warrant_options += desc
+			warrant_map[desc] = W
 
-/obj/item/device/holowarrant/attackby(obj/item/tool, mob/user, list/modifiers, list/attack_modifiers)
-	var/obj/item/card/id/id = tool.GetID()
-	if(!id)
-		return ..()
-	if(!active)
-		to_chat(user, span_warning("\\The [src] has no warrant to authorize."))
-		return TRUE
-	if(!check_access(id))
-		to_chat(user, span_warning("Access denied."))
-		return TRUE
-	var/choice = tgui_alert(user, "Would you like to authorize this warrant?", "\\The [src] - Authorization", list("Yes", "No"))
-	if(choice != "Yes" || !user.can_perform_action(src))
-		return TRUE
-	active.auth = "[id.registered_name] - [id.assignment ? id.assignment : "(Unknown)"]"
-	user.visible_message(
-		span_notice("[user] scans [tool] with [src]."),
-		span_notice("You authorize [src]'s warrant with [id.registered_name].")
-	)
-	return TRUE
+	if(!length(warrant_options))
+		to_chat(user, span_notice("There are no warrants available."))
+		update_appearance()
+		return
+
+	var/choice = input(user, "Which warrant would you like to load?") as null|anything in warrant_options
+	if(!choice || QDELETED(src) || !user || !user.can_perform_action(src) || !in_range(src, user))
+		update_appearance()
+		return
+
+	active = warrant_map[choice]
+	update_appearance()
 
 /obj/item/device/holowarrant/afterattack(atom/target, mob/user, list/modifiers, list/attack_modifiers)
 	if(iscarbon(target))
