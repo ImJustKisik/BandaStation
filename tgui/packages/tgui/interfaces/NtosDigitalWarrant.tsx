@@ -23,8 +23,8 @@ type Data = {
   crew_manifest?: CrewMember[];
 };
 
-export const NtosDigitalWarrant = (props, context) => {
-  const { act, data } = useBackend<Data>(context);
+export const NtosDigitalWarrant = () => {
+  const { act, data } = useBackend<Data>();
   const { warrants = [], active, crew_manifest = [] } = data;
 
   return (
@@ -58,19 +58,19 @@ const WarrantEditor = (props: WarrantEditorProps) => {
         <LabeledList.Item label="Name">
           <Input
             value={warrant.namewarrant}
-            onChange={(e, value) => act('edit_name', { name: value, job: warrant.jobwarrant })}
+            onChange={value => act('edit_name', { name: value, job: warrant.jobwarrant })}
           />
         </LabeledList.Item>
         <LabeledList.Item label="Job">
           <Input
             value={warrant.jobwarrant}
-            onChange={(e, value) => act('edit_name', { name: warrant.namewarrant, job: value })}
+            onChange={value => act('edit_name', { name: warrant.namewarrant, job: value })}
           />
         </LabeledList.Item>
         <LabeledList.Item label="Charges">
           <Input
             value={warrant.charges}
-            onChange={(e, value) => act('edit_charges', { charges: value })}
+            onChange={value => act('edit_charges', { charges: value })}
           />
         </LabeledList.Item>
         <LabeledList.Item label="Authorized">
