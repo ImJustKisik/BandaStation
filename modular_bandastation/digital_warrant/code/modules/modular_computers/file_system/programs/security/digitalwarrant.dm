@@ -9,8 +9,6 @@
 	program_flags = PROGRAM_ON_NTNET_STORE | PROGRAM_REQUIRES_NTNET
 	download_access = list(ACCESS_SECURITY, ACCESS_FLAG_COMMAND)
 
-	var/datum/digital_warrant/active_warrant
-
 /datum/computer_file/program/digitalwarrant/proc/serialize_warrant(datum/digital_warrant/W)
 	return list(
 		"id" = REF(W),
@@ -22,10 +20,15 @@
 		"arrestsearch" = W.arrestsearch,
 	)
 
-/datum/computer_file/program/digitalwarrant/ui_data(mob/user)
+/datum/computer_file/program/digitalwarrant/ui_data(mob/user, datum/tgui/ui)
 	var/list/data = list()
+	var/datum/digital_warrant/active_warrant = ui.vars["active_warrant"]
+	var/list/new_warrant_data = ui.vars["new_warrant_data"]
+
 	if(active_warrant)
 		data["active"] = serialize_warrant(active_warrant)
+	else if(new_warrant_data)
+		data["active"] = new_warrant_data
 	else
 		var/list/listed = list()
 		for(var/datum/digital_warrant/W in GLOB.all_warrants)
@@ -39,35 +42,68 @@
 		return
 	var/mob/living/user_living = ui.user
 	var/obj/item/card/id/I = user_living?.get_idcard(TRUE)
+	var/datum/digital_warrant/active_warrant = ui.vars["active_warrant"]
+	var/list/new_warrant_data = ui.vars["new_warrant_data"]
+
+	if(!active_warrant && !new_warrant_data)
+		switch(action)
+			if("open", "add_arrest", "add_search", "delete")
+				// These actions are valid without a target
+			else
+				return TRUE // most actions require a target
+
 	switch(action)
 		if("open")
 			var/datum/digital_warrant/W = locate(params["id"]) in GLOB.all_warrants
 			if(W)
-				active_warrant = W
+				ui.vars["active_warrant"] = W
+				ui.vars["new_warrant_data"] = null
 			return TRUE
 		if("add_arrest")
-			active_warrant = new()
-			active_warrant.charges = "No charges present"
-			active_warrant.arrestsearch = "arrest"
+			ui.vars["new_warrant_data"] = list(
+				"namewarrant" = "Unknown",
+				"jobwarrant" = "N/A",
+				"charges" = "No charges present",
+				"auth" = "Unauthorized",
+				"idauth" = "Unauthorized",
+				"arrestsearch" = "arrest"
+			)
+			ui.vars["active_warrant"] = null
 			return TRUE
 		if("add_search")
-			active_warrant = new()
-			active_warrant.charges = "No reason given"
-			active_warrant.arrestsearch = "search"
+			ui.vars["new_warrant_data"] = list(
+				"namewarrant" = "Unknown",
+				"jobwarrant" = "N/A",
+				"charges" = "No reason given",
+				"auth" = "Unauthorized",
+				"idauth" = "Unauthorized",
+				"arrestsearch" = "search"
+			)
+			ui.vars["active_warrant"] = null
 			return TRUE
 		if("edit_name")
-			if(!active_warrant)
-				return TRUE
-			active_warrant.namewarrant = isnull(params["name"]) ? active_warrant.namewarrant : sanitize(params["name"])
-			active_warrant.jobwarrant = isnull(params["job"]) ? active_warrant.jobwarrant : sanitize(params["job"])
-			active_warrant.auth = "Unauthorized"
-			active_warrant.idauth = "Unauthorized"
-			active_warrant.access = list()
+			if(active_warrant)
+				active_warrant.namewarrant = isnull(params["name"]) ? active_warrant.namewarrant : sanitize(params["name"])
+				active_warrant.jobwarrant = isnull(params["job"]) ? active_warrant.jobwarrant : sanitize(params["job"])
+				active_warrant.auth = "Unauthorized"
+				active_warrant.idauth = "Unauthorized"
+				active_warrant.access = list()
+			else if(new_warrant_data)
+				new_warrant_data["namewarrant"] = isnull(params["name"]) ? new_warrant_data["namewarrant"] : sanitize(params["name"])
+				new_warrant_data["jobwarrant"] = isnull(params["job"]) ? new_warrant_data["jobwarrant"] : sanitize(params["job"])
+				new_warrant_data["auth"] = "Unauthorized"
+				new_warrant_data["idauth"] = "Unauthorized"
 			return TRUE
 		if("edit_charges")
-			if(!active_warrant)
-				return TRUE
-			active_warrant.charges = isnull(params["charges"]) ? active_warrant.charges : sanitize(params["charges"])
+			if(active_warrant)
+				active_warrant.charges = isnull(params["charges"]) ? active_warrant.charges : sanitize(params["charges"])
+				active_warrant.auth = "Unauthorized"
+				active_warrant.idauth = "Unauthorized"
+				active_warrant.access = list()
+			else if(new_warrant_data)
+				new_warrant_data["charges"] = isnull(params["charges"]) ? new_warrant_data["charges"] : sanitize(params["charges"])
+				new_warrant_data["auth"] = "Unauthorized"
+				new_warrant_data["idauth"] = "Unauthorized"
 			return TRUE
 		if("authorize")
 			if(!active_warrant || !I)
@@ -91,25 +127,34 @@
 				return TRUE
 			var/list/warrant_access = get_job_accesses(J)
 			if(islist(warrant_access))
-				warrant_access.Remove(SSid_access.get_flag_access_list(ACCESS_FLAG_COMMAND))
-			active_warrant.idauth = "[I.registered_name] - [I.assignment ? I.assignment : "(Unknown)"]"
-			active_warrant.access = warrant_access
+				active_warrant.idauth = "[I.registered_name] - [I.assignment ? I.assignment : "(Unknown)"]"
+				active_warrant.access = warrant_access
 			return TRUE
 		if("save")
-			if(!active_warrant)
-				return TRUE
-			GLOB.all_warrants |= active_warrant
-			active_warrant = null
+			if(new_warrant_data)
+				var/datum/digital_warrant/W = new()
+				W.namewarrant = new_warrant_data["namewarrant"]
+				W.jobwarrant = new_warrant_data["jobwarrant"]
+				W.charges = new_warrant_data["charges"]
+				W.auth = new_warrant_data["auth"]
+				W.idauth = new_warrant_data["idauth"]
+				W.arrestsearch = new_warrant_data["arrestsearch"]
+				GLOB.all_warrants |= W
+
+			ui.vars["active_warrant"] = null
+			ui.vars["new_warrant_data"] = null
 			return TRUE
 		if("delete")
 			var/datum/digital_warrant/W = locate(params["id"]) in GLOB.all_warrants
 			if(W)
 				GLOB.all_warrants -= W
+				qdel(W)
 			if(active_warrant == W)
-				active_warrant = null
+				ui.vars["active_warrant"] = null
 			return TRUE
 		if("back")
-			active_warrant = null
+			ui.vars["active_warrant"] = null
+			ui.vars["new_warrant_data"] = null
 			return TRUE
 	return FALSE
 
