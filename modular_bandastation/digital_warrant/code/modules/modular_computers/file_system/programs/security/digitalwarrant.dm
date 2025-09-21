@@ -34,6 +34,12 @@
 		for(var/datum/digital_warrant/W in GLOB.all_warrants)
 			listed += list(serialize_warrant(W))
 		data["warrants"] = listed
+
+	var/list/crew_manifest = list()
+	for(var/datum/record/crew/CR in GLOB.manifest.general)
+		if(CR.name && CR.rank)
+			crew_manifest += list(list("name" = CR.name, "rank" = CR.rank))
+	data["crew_manifest"] = crew_manifest
 	return data
 
 /datum/computer_file/program/digitalwarrant/ui_act(action, params, datum/tgui/ui, datum/ui_state/state)
@@ -80,6 +86,24 @@
 				"arrestsearch" = "search"
 			)
 			ui.vars["active_warrant"] = null
+			return TRUE
+		if("select_from_manifest")
+			var/name = params["name"]
+			var/job = params["job"]
+			if(!name || !job)
+				return TRUE
+
+			if(active_warrant)
+				active_warrant.namewarrant = name
+				active_warrant.jobwarrant = job
+				active_warrant.auth = "Unauthorized"
+				active_warrant.idauth = "Unauthorized"
+				active_warrant.access = list()
+			else if(new_warrant_data)
+				new_warrant_data["namewarrant"] = name
+				new_warrant_data["jobwarrant"] = job
+				new_warrant_data["auth"] = "Unauthorized"
+				new_warrant_data["idauth"] = "Unauthorized"
 			return TRUE
 		if("edit_name")
 			if(active_warrant)

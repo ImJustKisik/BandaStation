@@ -12,20 +12,30 @@ type Warrant = {
   arrestsearch: string;
 };
 
+type CrewMember = {
+  name: string;
+  rank: string;
+};
+
 type Data = {
   warrants?: Warrant[];
   active?: Warrant;
+  crew_manifest?: CrewMember[];
 };
 
 export const NtosDigitalWarrant = (props, context) => {
   const { act, data } = useBackend<Data>(context);
-  const { warrants = [], active } = data;
+  const { warrants = [], active, crew_manifest = [] } = data;
 
   return (
-    <Window width={500} height={400}>
+    <Window width={500} height={600}>
       <Window.Content>
         {active ? (
-          <WarrantEditor warrant={active} act={act} />
+          <WarrantEditor
+            warrant={active}
+            act={act}
+            crew_manifest={crew_manifest}
+          />
         ) : (
           <WarrantList warrants={warrants} act={act} />
         )}
@@ -36,30 +46,31 @@ export const NtosDigitalWarrant = (props, context) => {
 
 type WarrantEditorProps = {
   warrant: Warrant;
-  act: (action: string, params?: any) => void;
+  act: (action: string, params?: object) => void;
+  crew_manifest: CrewMember[];
 };
 
 const WarrantEditor = (props: WarrantEditorProps) => {
-  const { warrant, act } = props;
+  const { warrant, act, crew_manifest } = props;
   return (
     <Section title={warrant.namewarrant}>
       <LabeledList>
         <LabeledList.Item label="Name">
           <Input
             value={warrant.namewarrant}
-            onChange={(name) => act('edit_name', { name, job: warrant.jobwarrant })}
+            onChange={(e, value) => act('edit_name', { name: value, job: warrant.jobwarrant })}
           />
         </LabeledList.Item>
         <LabeledList.Item label="Job">
           <Input
             value={warrant.jobwarrant}
-            onChange={(job) => act('edit_name', { name: warrant.namewarrant, job })}
+            onChange={(e, value) => act('edit_name', { name: warrant.namewarrant, job: value })}
           />
         </LabeledList.Item>
         <LabeledList.Item label="Charges">
           <Input
             value={warrant.charges}
-            onChange={(charges) => act('edit_charges', { charges })}
+            onChange={(e, value) => act('edit_charges', { charges: value })}
           />
         </LabeledList.Item>
         <LabeledList.Item label="Authorized">
@@ -75,6 +86,7 @@ const WarrantEditor = (props: WarrantEditorProps) => {
           </Button>
         </LabeledList.Item>
       </LabeledList>
+      <CrewManifestList crew={crew_manifest} act={act} />
       <Stack mt={2} justify="space-between">
         <Button onClick={() => act('save')}>Save</Button>
         <Button onClick={() => act('delete', { id: warrant.id })}>Delete</Button>
@@ -84,9 +96,38 @@ const WarrantEditor = (props: WarrantEditorProps) => {
   );
 };
 
+type CrewManifestListProps = {
+  crew: CrewMember[];
+  act: (action: string, params?: object) => void;
+};
+
+const CrewManifestList = (props: CrewManifestListProps) => {
+  const { crew, act } = props;
+  if (!crew?.length) {
+    return null;
+  }
+  return (
+    <Section title="Crew Manifest">
+      <Stack wrap>
+        {crew.map(c => (
+          <Button
+            key={c.name + c.rank}
+            onClick={() => act('select_from_manifest', { name: c.name, rank: c.rank })}
+            mr={1}
+            mb={1}
+          >
+            {c.name} ({c.rank})
+          </Button>
+        ))}
+      </Stack>
+    </Section>
+  );
+};
+
+
 type WarrantListProps = {
   warrants: Warrant[];
-  act: (action: string, params?: any) => void;
+  act: (action: string, params?: object) => void;
 };
 
 const WarrantList = (props: WarrantListProps) => {
